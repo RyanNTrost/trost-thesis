@@ -33,6 +33,12 @@ class LaplaceProblemDataset(Dataset):
             
     def __len__(self):
         return len(self.samples)
+
+    def input_size(self):
+        return len(self.samples[0]['coefficients'])
+    
+    def output_size(self):
+        return len(self.samples[0]['output'])
     
     def __getitem__(self, idx):
         return self.samples[idx]
