@@ -11,17 +11,20 @@ class LaplaceProblemDataset(Dataset):
         grid_size = int(input_file.split('_')[1].split('x')[0])
         grid_size_squared = grid_size**2
 
+        output_size = int(input_file.split('_')[2])
+        output_size_squared = output_size**2
+
         data = pd.read_csv(input_file, sep=' ', header=None, nrows=n).to_numpy()
     
         self.samples = []
         
         for sample in data:
             input_coefficients = sample[:grid_size_squared]
-            input_2d = np.reshape(input_coefficients, (-1, 2))
+            input_2d = np.reshape(input_coefficients, (grid_size, grid_size))
             dct_input = dct2(input_2d).reshape(-1)
             
             output_values = sample[grid_size_squared:]
-            output_2d = np.reshape(output_values, (-1, 2))
+            output_2d = np.reshape(output_values, (output_size, output_size))
             dct_output = dct2(output_2d).reshape(-1)
 
             self.samples.append({
@@ -61,7 +64,7 @@ def split_data(dataset, train_split=0.5, validation_split=0.2, test_split=0.3):
     validation_size = int(validation_split * len(dataset))
     test_size = int(test_split * len(dataset))
 
-    training_data, validation_data, test_data = random_split(dataset, [train_size, validation_size, test_size])
+    training_data, validation_data, test_data = random_split(dataset, [train_size, validation_size, test_size], generator=torch.Generator().manual_seed(0))
 
     train_dataloader = DataLoader(training_data, batch_size=1, shuffle=False)
     validation_dataloader = DataLoader(validation_data, batch_size=1, shuffle=False)

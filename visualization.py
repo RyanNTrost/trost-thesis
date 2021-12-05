@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from matplotlib import cm
 import numpy as np
 
-def plot_output(predicted, expected, epoch, loss, folder):
+def plot_output(predicted, expected, epoch, loss, folder, save=True):
     n = int(np.sqrt(len(predicted)))
     n_interp = 30
     X1 = np.linspace(0, 0.9, n_interp)
@@ -30,6 +30,25 @@ def plot_output(predicted, expected, epoch, loss, folder):
     fig.suptitle('Epoch: ' + str(epoch) + " Loss: " + str(loss), fontsize=15)
     
     plt.tight_layout()
-    plt.savefig(folder + "/epoch-" + str(epoch) + ".png",bbox_inches='tight')
+
+    if save:
+        plt.savefig(folder + "/epoch-" + str(epoch) + ".png",bbox_inches='tight')
+    else:
+        plt.show()
+    
     plt.close(fig)
-    plt.show()
+
+def plot_error(losses, name, folder, save=True):
+    plt.xlabel('Epoch')
+    plt.ylabel('Log of Error')
+    plt.title(name)
+    for key in losses:
+        loss = losses[key]
+        plt.plot(range(len(loss)), np.log(loss), label=str(key))
+    
+    plt.legend()
+
+    if save:
+        plt.savefig(folder + "/" + str(name) + ".png")
+    else:
+        plt.show()
